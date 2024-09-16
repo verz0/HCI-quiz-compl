@@ -1,0 +1,6 @@
+{
+  "routes": [
+    { "src": "/api", "headers": { "Content-Security-Policy": "default-src 'self' https:; connect-src 'self' https://hci-analysis.software/" } },
+    { "src": "/api/*", "headers": { "Content-Security-Policy": "default-src 'self' https:; connect-src 'self' https://hci-analysis.software/" } }
+  ]
+}

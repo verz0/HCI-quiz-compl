@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: django
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - static:/www/app/staticfiles:rw
+      - media:/www/app/media:rw
+      - ./backend:/usr/src/app:rw
+    ports:
+      - "8842:8001"
+    restart: always
+    networks:
+      - main
+
+  # quizapp:
+  #   container_name: hci_normal
+  #   build:
+  #     context: ./quizapp/frontend
+  #   ports:
+  #     - "8844:8844"
+  #   depends_on:
+  #     - web
+  #   networks:
+  #     - main
+
+  # quizapp_noassistance:
+  #   container_name: hci_noAssistance
+  #   build:
+  #     context: ./quizapp-noAssistance/frontend
+  #   ports:
+  #     - "8846:8846"
+  #   depends_on:
+  #     - web
+  #   networks:
+  #     - main
+
+  # quizapp_prompted:
+  #   container_name: hci_prompted
+  #   build:
+  #     context: ./quizapp-prompted/frontend
+  #   ports:
+  #     - "8848:8848"
+  #   depends_on:
+  #     - web
+  #   networks:
+  #     - main
+
+  nginx:
+    container_name: nginx_hci
+    build:
+      context: ./nginx/
+    volumes:
+      - static:/home/app/staticfiles:rw
+      - media:/home/app/media:rw
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # - ./nginx/nginx.prod.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - web
+      # - quizapp
+      # - quizapp_noassistance
+      # - quizapp_prompted
+    restart: always
+    networks:
+      - main
+volumes:
+  static:
+  media:
+networks:
+  main:
